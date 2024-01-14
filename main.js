@@ -5,6 +5,12 @@ const thead = document.getElementById("thead");
 const tbody = document.getElementById("tbody");
 let firstRun = undefined;
 
+let initUrl = decodeURIComponent(window.location.search.slice(1));
+initUrl ||= localStorage.getItem("lastUrl");
+if (initUrl) {
+  document.getElementById("url").value = initUrl;
+}
+
 /**
  * Updates and returns first run date.
  * @return {string}
@@ -78,6 +84,7 @@ function start() {
   firstRunDate();
   int = setInterval(performRequest, 1000);
   currentUrl = document.getElementById("url").value;
+  localStorage.setItem("lastUrl", currentUrl);
 }
 /**
  * Sort keys and return corresponding arrays of keys and values.

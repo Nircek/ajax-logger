@@ -20,6 +20,18 @@ let currentUrl;
 function newRow() {
   return tbody.appendChild(document.createElement("tr"));
 }
+
+/**
+ * Checks whether the page is scrolled at bottom.
+ * @return {bool}
+ */
+function atbottom() {
+  // https://stackoverflow.com/a/9439807/6732111
+  return (
+    window.innerHeight + Math.round(window.scrollY) >=
+    document.body.offsetHeight
+  );
+}
 /**
  * Adds new cells in the row.
  * @param {HTMLElement} rowElement
@@ -89,7 +101,8 @@ function unzip(obj) {
 async function performRequest() {
   const c = counter++;
   const t0 = performance.now();
-  const time = () => performance.now() - t0;
+  const time = () => (performance.now() - t0).toFixed(1);
+  let autoscroll = false;
   try {
     const response = await fetch(currentUrl, { cache: "no-cache" });
     const data = await response.json();
@@ -98,9 +111,15 @@ async function performRequest() {
     data[".timestamp"] = getTime();
     const [headRow, dataRow] = unzip(data);
     if (thead.childElementCount == 0) addRow(thead, headRow, 1);
+
+    autoscroll = atbottom();
     addRow(newRow(), dataRow);
   } catch (e) {
+    autoscroll = atbottom();
     addRow(newRow(), [c, time(), getTime(), e], 2);
+  }
+  if (autoscroll) {
+    document.documentElement.scrollIntoView(false);
   }
 }
 

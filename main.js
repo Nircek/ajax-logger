@@ -1,16 +1,24 @@
 /* eslint-disable no-unused-vars */
 let int = undefined;
 let counter = 0;
-const thr = document.getElementById("thead");
+const thead = document.getElementById("thead");
+const tbody = document.getElementById("tbody");
+let firstRun = undefined;
+
+/**
+ * Updates and returns first run date.
+ * @return {string}
+ */
+function firstRunDate() {
+  return (firstRun = firstRun ?? new Date().toISOString().split("T")[0]);
+}
 let currentUrl;
 /**
  * Creats new data row in the table.
  * @return {HTMLElement} row element
  */
 function newRow() {
-  return document
-    .getElementById("tbody")
-    .appendChild(document.createElement("tr"));
+  return tbody.appendChild(document.createElement("tr"));
 }
 /**
  * Adds new cells in the row.
@@ -28,7 +36,7 @@ function addRow(rowElement, rowList, variant = 0) {
   if (variant == 2) {
     rowElement.lastChild.setAttribute(
       "colspan",
-      thr.childElementCount - rowList.length + 1
+      thead.childElementCount - rowList.length + 1
     );
   }
 }
@@ -55,6 +63,7 @@ function stop() {
  */
 function start() {
   stop();
+  firstRunDate();
   int = setInterval(performRequest, 1000);
   currentUrl = document.getElementById("url").value;
 }
@@ -88,9 +97,52 @@ async function performRequest() {
     data[".time"] = time();
     data[".timestamp"] = getTime();
     const [headRow, dataRow] = unzip(data);
-    if (thr.childElementCount == 0) addRow(thr, headRow, 1);
+    if (thead.childElementCount == 0) addRow(thead, headRow, 1);
     addRow(newRow(), dataRow);
   } catch (e) {
     addRow(newRow(), [c, time(), getTime(), e], 2);
   }
+}
+
+/**
+ * Make a download dialog of virtual file.
+ * @param {string} filename
+ * @param {string} text
+ */
+function download(filename, text) {
+  // https://ourcodeworld.com/articles/read/189/how-to-create-a-file-and-generate-a-download-with-javascript-in-the-browser-without-a-server
+  const element = document.createElement("a");
+  element.setAttribute(
+    "href",
+    "data:text/csv;charset=utf-8," + encodeURIComponent(text)
+  );
+  element.setAttribute("download", filename);
+  element.style.display = "none";
+  document.body.appendChild(element);
+  element.click();
+  document.body.removeChild(element);
+}
+/**
+ * Export all data from table to CSV file.
+ */
+function exportCSV() {
+  const csv = [
+    [...thead.getElementsByTagName("th")].map((e) => e.innerText),
+    ...[...tbody.getElementsByTagName("tr")].map((e) =>
+      [...e.getElementsByTagName("td")]
+        .map((e) => `"${e.innerText.replace('"', '""')}"`)
+        .join()
+    ),
+  ].join("\n");
+  download(`ajax-logger-${firstRunDate()}.csv`, csv);
+}
+
+/**
+ * Drop database.
+ */
+function clearData() {
+  if (!window.confirm("Do you really want to clear all data?")) return;
+  counter = 0;
+  thead.replaceChildren();
+  tbody.replaceChildren();
 }

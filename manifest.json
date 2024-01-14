@@ -2,6 +2,7 @@
     "name": "Minimal Progressive Web App",
     "icons": [
     ],
-    "start_url": "/",
+    "start_url": "/ajax-logger/",
+    "scope": "/ajax-logger/",
     "display": "standalone"
   }

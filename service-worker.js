@@ -2,7 +2,7 @@
 /* see https://github.com/oliverjam/minimal-pwa */
 
 const CACHE_NAME = "nircek-ajax-logger-2024-01-14";
-const urlsToCache = ["/", "/main.js"];
+const urlsToCache = ["/ajax-logger/", "/ajax-logger/main.js"];
 
 self.addEventListener("install", async (event) => {
   console.log("installing!");

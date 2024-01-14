@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>AJAX logger</title>
-    <link rel="manifest" href="/manifest.json" />
+    <link rel="manifest" href="manifest.json" />
     <style>
       table,
       td {
@@ -36,7 +36,7 @@
     <script>
       if ("serviceWorker" in navigator) {
         navigator.serviceWorker
-          .register("/service-worker.js")
+          .register("service-worker.js")
           .then(() => {
             console.log("Service worker registered");
           })

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AJAX logger</title>
+    <link rel="manifest" href="/manifest.json" />
+    <style>
+      table,
+      td {
+        border: 1px solid #333;
+      }
+
+      thead,
+      tfoot {
+        background-color: #333;
+        color: #fff;
+      }
+    </style>
+    <script src="main.js" defer></script>
+  </head>
+  <body>
+    <input
+      type="text"
+      id="url"
+      title="Needs Access-Control-Allow-Origin header to work."
+      value="http://127.0.0.1:5000/api"
+    />
+    <button onclick="start()">START</button>
+    <button onclick="stop()">STOP</button>
+    <table>
+      <thead>
+        <tr id="thead"></tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register("/service-worker.js")
+          .then(() => {
+            console.log("Service worker registered");
+          })
+          .catch((err) => {
+            console.log("Service worker registration failed: " + err);
+          });
+      }
+    </script>
+  </body>
+</html>

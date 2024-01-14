@@ -1,0 +1,7 @@
+{
+    "name": "Minimal Progressive Web App",
+    "icons": [
+    ],
+    "start_url": "/",
+    "display": "standalone"
+  }
